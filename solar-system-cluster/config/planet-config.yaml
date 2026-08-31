@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: planet-config
+  namespace: planets
+data: 
+  # Planet detection ranges (km)
+  EARTH_RANGE: "500000"
+  MARS_RANGE: "350000"
+  JUPITER_RANGE: "1200000"
