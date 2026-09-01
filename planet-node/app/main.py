@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from detection import detect_asteroids
-from db import save_asteroids, get_all_asteroids
-from gossip import gossip_with_peers
+from .detection import detect_asteroids
+from .db import save_asteroids, get_all_asteroids
+from .gossip import gossip_with_peers
 import os
 
 app = FastAPI()
