@@ -1,7 +1,7 @@
 import requests
 import os
 
-PLANET_NAME = os.getenv("PLANET_NAME")
+PLANET_NAME = os.getenv("PLANET_NAME", "")
 
 # hardcoded for now
 PEERS = [
