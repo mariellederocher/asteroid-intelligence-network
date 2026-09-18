@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: planet-jupiter
+  namespace: planets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: planet-jupiter
+  template:
+    metadata:
+      labels:
+        app: planet-jupiter
+    spec:
+      nodeSelector:
+        planet: jupiter
+      containers:
+        - name: planet-node
+          image: planet-node:latest
+          imagePullPolicy: Never
+          env:
+            - name: PLANET_NAME
+              value: "jupiter"
+            - name: CONFIG_PATH
+              value: "/planet-config.yaml"
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: planet-config
+              mountPath: /config
+      volumes:
+        - name: planet-config
+          configMap:
+            name: planet-config
+            items:
+              - key: planet-config.yaml
+                path: planet-config.yaml

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: planet-mars
+  namespace: planets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: planet-mars
+  template:
+    metadata:
+      labels:
+        app: planet-mars
+    spec:
+      nodeSelector:
+        planet: mars
+      containers:
+        - name: planet-node
+          image: planet-node:latest
+          imagePullPolicy: Never
+          env:
+            - name: PLANET_NAME
+              value: "mars"
+            - name: CONFIG_PATH
+              value: "/planet-config.yaml"
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: planet-config
+              mountPath: /config
+      volumes:
+        - name: planet-config
+          configMap:
+            name: planet-config
+            items:
+              - key: planet-config.yaml
+                path: planet-config.yaml

@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: planet-earth-svc
+  namespace: planets
+spec:
+  selector:
+    app: planet-earth
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: planet-mars-svc
+  namespace: planets
+spec:
+  selector:
+    app: planet-mars
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: planet-jupiter-svc
+  namespace: planets
+spec:
+  selector:
+    app: planet-jupiter
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+
+---
