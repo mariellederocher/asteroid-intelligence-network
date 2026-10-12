@@ -8,7 +8,7 @@ spec:
     app: planet-earth
   ports:
     - name: http
-      port: 8000
+      port: 80
       targetPort: 8000
 
 ---
@@ -22,7 +22,7 @@ spec:
     app: planet-mars
   ports:
     - name: http
-      port: 8000
+      port: 80
       targetPort: 8000
 
 ---
@@ -36,7 +36,7 @@ spec:
     app: planet-jupiter
   ports:
     - name: http
-      port: 8000
+      port: 80
       targetPort: 8000
 
 ---

@@ -4,7 +4,7 @@ metadata:
   name: planet-gossip
   namespace: planets
 spec:
-  schedule: "*/5 * * * *"
+  schedule: "*/1 * * * *"
   jobTemplate:
     spec:
       template:
@@ -12,24 +12,16 @@ spec:
           labels:
             app: planet-gossip
         spec:
-          nodeSelector:
-            planet: earth
+          nodeSelector: {}
           restartPolicy: OnFailure
+          tolerations:
+            - key: "node-role.kubernetes.io/control-plane"
+              operator: "Exists"
           containers:
             - name: planet-gossip
-              image: planet-node:latest
-              imagePullPolicy: Never
+              image: md68/planet-node
               command: ["python", "-m", "app.gossip"]
-              env:
-                - name: CONFIG_PATH
-                  value: "/config/planets.yaml"
-              volumeMounts:
-                - name: planet-config
-                  mountPath: /config
-          volumes:
-            - name: planet-config
-              configMap:
-                name: planet-config
-                items:
-                  - key: planets.yaml
-                    path: planets.yaml
+              envFrom:
+                - configMapRef:
+                    name: planet-config
+              

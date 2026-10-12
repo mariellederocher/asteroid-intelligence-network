@@ -4,11 +4,11 @@ import os
 PLANET_NAME = os.getenv("PLANET_NAME", "unknown")
 
 # hardcoded for now
-PEERS = [
-    "http://planet-earth.planets.svc.cluster.local:8000",
-    "http://planet-mars.planets.svc.cluster.local:8000",
-    "http://planet-jupiter.planets.svc.cluster.local:8000",
-]
+PEERS = {
+    "http://planet-earth-svc.planets.svc.cluster.local:80",
+    "http://planet-mars-svc.planets.svc.cluster.local:80",
+    "http://planet-jupiter-svc.planets.svc.cluster.local:80",
+}
 
 def gossip_with_peers():
     updated = 0

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: planet-earth
+  namespace: planets
+  labels:
+    app: planet-earth 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: planet-earth
+  template:
+    metadata:
+      labels:
+        app: planet-earth
+    spec:
+      containers:
+        - name: planet-node
+          image: md68/planet-node
+          ports:
+            - containerPort: 8000
+          env:
+            - name: PLANET_NAME
+              value: "earth"
+          envFrom:
+            - configMapRef:
+                name: planet-config

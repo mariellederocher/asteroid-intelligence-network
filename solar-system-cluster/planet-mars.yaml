@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: planet-mars
   namespace: planets
+  labels:
+    app: planet-mars 
 spec:
   replicas: 1
   selector:
@@ -13,26 +15,14 @@ spec:
       labels:
         app: planet-mars
     spec:
-      nodeSelector:
-        planet: mars
       containers:
         - name: planet-node
-          image: planet-node:latest
-          imagePullPolicy: Never
+          image: md68/planet-node
+          ports:
+            - containerPort: 8000
           env:
             - name: PLANET_NAME
               value: "mars"
-            - name: CONFIG_PATH
-              value: "/planet-config.yaml"
-          ports:
-            - containerPort: 8000
-          volumeMounts:
-            - name: planet-config
-              mountPath: /config
-      volumes:
-        - name: planet-config
-          configMap:
-            name: planet-config
-            items:
-              - key: planet-config.yaml
-                path: planet-config.yaml
+          envFrom:
+            - configMapRef:
+                name: planet-config

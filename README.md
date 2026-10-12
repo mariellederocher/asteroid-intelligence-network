@@ -1,13 +1,54 @@
 # Asteroid Intelligence Network
 
-This project is a multi-repository distributed system that simulates computing nodes located on planets in the solar system. Each node detects nearby asteroids, stores them, and shares information with other planets to maintain a collective, eventually consistent asteroid database. The system is split into multiple repositories to reflect real-world distributed architecture patterns.
+This project simulates a distributed system of compute nodes located on planets in the solar system. Each node detects nearby asteroids, stores them, and shares information with other planets to maintain a collective, eventually consistent asteroid database. The system is split into multiple repositories to reflect real-world distributed architecture patterns.
 
 ---
+
+## Running Locally
+
+Start Minikube cluster, build and push planet-node service, and apply manifests. 
+```
+minikube start
+
+docker build -t <docker acc>/planet-node planet-node/ 
+docker push <docker acc>/planet-node
+
+kubectl apply -f solar-system-cluster
+```
+
+View state of current planet pods.
+```
+kubectl get pods -n planets
+```
+
+Use a `POST` call to `/detect` to have the planet to detect new asteroids. This currently generates 0-5 random asteroids and adds them to the planet's lo 
+```
+kubectl exec deploy/planet-earth -n planets -- \
+  curl -X POST localhost:8000/detect
+kubectl exec deploy/planet-mars -n planets -- \
+  curl -X POST localhost:8000/detect
+kubectl exec deploy/planet-jupiter -n planets -- \
+  curl -X POST localhost:8000/detect
+```
+
+Call `/asteroids` to get the current local list of asteroids from a planet. 
+```
+kubectl exec deploy/planet-earth -n planets -- curl localhost:8000/asteroids
+kubectl exec deploy/planet-mars -n planets -- curl localhost:8000/asteroids
+kubectl exec deploy/planet-jupiter -n planets -- curl localhost:8000/asteroids
+```
+
+Call `/gossip` to have a planet contact the other planets and add their asteroids lists to the current planets local database. 
+```
+kubectl exec deploy/planet-earth -n planets -- curl localhost:8000/gossip
+kubectl exec deploy/planet-mars -n planets -- curl localhost:8000/gossip
+kubectl exec deploy/planet-jupiter -n planets -- curl localhost:8000/gossip
+```
 
 ## Repositories
 
 ### planet-node
-A FastAPI microservice that runs on each planet. This repo contains the application code and Dockerfile.
+A FastAPI service that runs on each planet. This repo contains the application code and Dockerfile.
 
 - Detects asteroids within its configured range
 - Stores asteroid data 
@@ -25,11 +66,7 @@ Kubernetes manifests that deploy the planets. This repo contains the infrastruct
 
 ## How It Works
 
-Each planet runs the same planet-node container, but with different environment variables (planet name, detection range).
-Planets detect asteroids using a stub currently, but eventually the project will use real NASA data.
-Planets store asteroid detections locally currently , with plans to implement Postgres in the future. 
-Planets gossip by calling each other’s /asteroids endpoint.
-The cluster converges toward a shared asteroid database.
+Each planet runs the same planet-node container, but with different environment variables (planet name, detection range). Planets detect asteroids using a stub currently, but eventually the project will use real NASA data. Planets currently store asteroid detections locally, with plans to implement Postgres in the future. Planets gossip by calling each other’s /asteroids endpoint, and the cluster converges toward a shared asteroid database.
 
 ## Future Plans: 
 
